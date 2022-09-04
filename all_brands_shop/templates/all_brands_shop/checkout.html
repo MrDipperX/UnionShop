@@ -1,0 +1,106 @@
+{% extends 'all_brands_shop/base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <li><a href="{% url 'home' %}">Главная</a></li>
+    <li class="active"><a href="{% url 'shop' %}">Магазин</a></li>
+    <li><a href="{% url 'about' %}">О нас</a></li>
+{% endblock navbar %}
+
+
+{% block content %}
+        <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Счёт</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'home' %}">Главная</a>
+                            <a href="{% url 'shop' %}">Магазин</a>
+                            <span>Счёт</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="checkout__form">
+
+
+
+
+                <form method="POST" id="checkout-form">
+                {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-8 col-md-6">
+                            <h6 class="checkout__title">Адрес назначения</h6>
+                            {% for field in address_form %}
+                                <div class="checkout__input">
+                                <p>{{ field.label }}<span>*</span></p>
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                            {% endfor %}
+                            {% for field in comment_form %}
+                                <div class="checkout__input">
+                                <p>{{ field.label }}<span>*</span></p>
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                            {% endfor %}
+                        {% if not request.user.is_authenticated %}
+                            {% for field in guest_form %}
+                                <div class="checkout__input">
+                                <p>{{ field.label }}<span>*</span></p>
+                                {{ field }}
+                                {{ field.errors }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <input type="hidden" value="{{ order.get_cart_total|floatformat:2 }}" name="total">
+
+
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="checkout__order">
+                                <h4 class="order__title">Ваш заказ </h4>
+                                <div class="checkout__order__products">Товар <span>Сумма</span></div>
+
+                                <ul class="checkout__total__products">
+                                    {% for item in items %}
+                                    <li>{{forloop.counter0 | add:1}}. "{{item.product.name}} | {{ item.size }}"  x{{item.quantity}} <span>{{item.product.sale_price|floatformat:2}} сум</span></li>
+                                    {% endfor %}
+                                </ul>
+                                <ul class="checkout__total__all">
+                                    <li>Товаров <span>{{order.get_cart_items}}</span></li>
+                                    <li>Итого <span>{{order.get_cart_total|floatformat:2}} сум</span></li>
+                                </ul>
+                                <a class="site-btn" href="#popup_palace_order" style="text-align: center">Заказать</a>
+
+
+                                <div id="popup_palace_order" class="overlay">
+                                    <div class="popup">
+                                        <a class="close" href="#">&times;</a>
+                                        <div class="content">
+                                            <h4>Нажимая на кнопку ниже, вы подтверждаете заказ.<br>Личные данные возьмутся из вашего профиля</h4>
+                                            <button type="submit" class="site-btn">Подтвердить заказ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+{% endblock content %}

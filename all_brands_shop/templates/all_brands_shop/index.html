@@ -1,0 +1,161 @@
+{% extends 'all_brands_shop/base.html' %}
+{% load static %}
+{% load all_brands_shop_tags %}
+
+{% block navbar %}
+    <li class="active"><a href="{% url 'home' %}">Главная</a></li>
+    <li><a href="{% url 'shop' %}">Магазин</a></li>
+    <li><a href="{% url 'about' %}">О нас</a></li>
+{% endblock navbar %}
+
+{% block content %}
+    <!-- Hero Section Begin -->
+    <section class="hero">
+        <div class="hero__slider owl-carousel">
+            {% get_slides as slides %}
+
+            {% for slide in slides %}
+            <div class="hero__items set-bg" data-setbg="../../../media/{{ slide.photo }}">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-5 col-lg-7 col-md-8">
+                            <div class="hero__text">
+                                <h2>{{ slide.name }}</h2>
+                                <p>{{ slide.slogan }}</p>
+                                <a href="{% url 'shop' %}" class="primary-btn">Купить сейчас <span class="arrow_right"></span></a>
+                                <div class="hero__social">
+                                    <a href="#"><i class="fa fa-facebook"></i></a>
+                                    <a href="#"><i class="fa fa-twitter"></i></a>
+                                    <a href="#"><i class="fa fa-pinterest"></i></a>
+                                    <a href="#"><i class="fa fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+    <!-- Hero Section End -->
+
+    <!-- Banner Section Begin -->
+    <section class="banner spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 offset-lg-4">
+                    <div class="banner__item">
+                        <div class="banner__item__pic">
+                            <img src="{% static 'all_brands_shop/images/banner/banner-1.jpg' %}" alt="">
+                        </div>
+                        <div class="banner__item__text">
+                            <h2>Clothing Collections 2030</h2>
+                            <a href="{% url 'shop' %}">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="banner__item banner__item--middle">
+                        <div class="banner__item__pic">
+                            <img src="{% static 'all_brands_shop/images/banner/banner-2.jpg' %}" alt="">
+                        </div>
+                        <div class="banner__item__text">
+                            <h2>Accessories</h2>
+                            <a href="{% url 'shop' %}">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="banner__item banner__item--last">
+                        <div class="banner__item__pic">
+                            <img src="{% static 'all_brands_shop/images/banner/banner-3.jpg' %}" alt="">
+                        </div>
+                        <div class="banner__item__text">
+                            <h2>Shoes Spring 2030</h2>
+                            <a href="{% url 'shop' %}">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Banner Section End -->
+
+    <!-- Product Section Begin -->
+    <section class="product spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="filter__controls">
+                        <li class="active" data-filter="*">Бестселлеры</li>
+                        <li data-filter=".new-arrivals">Новые</li>
+                        <li data-filter=".hot-sales">Хиты</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row product__filter">
+                {% latest_products as latest %}
+                {% for product in latest %}
+                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
+                    <div class="product__item sale">
+                        <div class="product__item__pic set-bg" data-setbg="../../..{{ product.image_url }}">
+                            {% if product.sale != 100 %}
+                                <span class="label">Скидка</span>
+                            {% endif %}
+                            <ul class="product__hover">
+                                <li><a href="{{ product.get_absolute_url }}"><img src="{% static 'all_brands_shop/images/icon/search.png' %}" alt=""><span>Подробнее</span></a></li>
+                                {% if request.user.is_authenticated %}
+                                <li><a data-product="{{product.id}}" data-action="add" class="update-favorites"><img src="{% static 'all_brands_shop/images/icon/heart.png' %}" alt=""><span>В избранное</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6>{{ product.name }}</h6>
+
+                            {% if product.sale != 100 %}
+                                <h5><s>{{ product.price|floatformat:2 }}</s> {{ product.sale_price|floatformat:2 }} сум</h5>
+                            {% else %}
+                                <h5>{{ product.price|floatformat:2 }} сум</h5>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% hottest_products as hottest %}
+            {% for product in hottest %}
+                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
+                    <div class="product__item sale">
+                        <div class="product__item__pic set-bg" data-setbg="../../..{{ product.image_url }}">
+                            {% if product.sale != 100 %}
+                                <span class="label">Скидка</span>
+                            {% endif %}
+                            <ul class="product__hover">
+                                <li><a href="{{ product.get_absolute_url }}"><img src="{% static 'all_brands_shop/images/icon/search.png' %}" alt=""><span>Подробнее</span></a></li>
+                                {% if request.user.is_authenticated %}
+                                <li><a data-product="{{product.id}}" data-action="add" class="update-favorites"><img src="{% static 'all_brands_shop/images/icon/heart.png' %}" alt=""><span>В избранное</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6>{{ product.name }}</h6>
+
+                            {% if product.sale != 100 %}
+                                <h5><s>{{ product.price|floatformat:2 }}</s> {{ product.sale_price|floatformat:2 }} сум</h5>
+                            {% else %}
+                                <h5>{{ product.price|floatformat:2 }} сум</h5>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- Product Section End -->
+
+
+
+{% endblock content %}

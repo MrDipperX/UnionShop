@@ -1,0 +1,179 @@
+{% extends 'all_brands_shop/base.html' %}
+{% load static %}
+{% load all_brands_shop_tags %}
+
+{% block navbar %}
+    <li><a href="{% url 'home' %}">Главная</a></li>
+    <li><a href="{% url 'shop' %}">Магазин</a></li>
+    <li><a href="{% url 'about' %}">О нас</a></li>
+{% endblock %}
+
+{% block content %}
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Профиль</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'home' %}">Главная</a>
+                            <span>Профиль</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="shopping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="shopping__cart__table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Имя:</td>
+                                    <td><span>{{ customer.first_name }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Фамилия:</td>
+                                    <td><span>{{ customer.last_name }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Имя пользователя:</td>
+                                    <td><span>{{ customer.username }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Электронная почта:</td>
+                                    <td><span>{{ customer.email }}</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Номер телефона:</td>
+                                    <td><span>{{ customer.mobile_number }}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn">
+                                <a href="{% url 'home' %}"><i class="fa fa-arrow-left"></i> Вернуться на главную</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="continue__btn update__btn">
+                                <a class="primary-btn" href="#popup1"><i class="fa fa-gears"></i> Изменить данные </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="cart__total">
+                        <h6>Дополнения</h6>
+                        <a href="{% url 'cart' %}" class="primary-btn"><i class="fa fa-shopping-cart"> Перейти в корзину</i></a>
+                        <a href="{% url 'favorites' %}" class="primary-btn"><i class="fa fa-heart"> Перейти в избранное</i></a>
+                        <a href="#popup2" class="primary-btn"><i class="fa fa-truck"> Заказы</i></a>
+                        <a href="#popup3" class="primary-btn"><i class="fa fa-home"> Ваши адреса доставки</i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="popup1" class="overlay">
+        <div class="popup">
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+                 <form method="POST" class="register-form" id="login-form">
+{#                    {{ form }}#}
+                     {% csrf_token %}
+                     {% for field in form %}
+                        <div class="form-group">
+                            <h5 style="text-align: left; color: #e53637"><label for="{{ field.auto_id }}" >{{ field.label }}</label></h5>
+                            {{ field }}
+
+                        {{ field.errors }}
+                        </div>
+                     {% endfor %}
+                    <div class="form-group form-button">
+                        <input type="submit" class="primary-btn" value="Сохранить"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup2" class="overlay">
+        <div class="popup">
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Товары</th>
+                        <th>Дата заказа</th>
+                        <th>Сумма заказа</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in customer.customer_orders %}
+                    <tr>
+                        <td>
+                            {{forloop.counter0 | add:1}}
+                        </td>
+                        <td>
+                            {% for item in order.get_order_items %}
+                                <u>{{ item }}</u>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{ order.date_ordered }}
+                        </td>
+                        <td>
+                            {{ order.get_cart_total|floatformat:2 }} сум
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup3" class="overlay">
+        <div class="popup">
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+            <table style="text-align: center">
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Адрес</th>
+                        <th>Почтовый индекс</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for address in customer.customer_shipping_addresses %}
+                    <tr>
+                        <td>
+                            {{forloop.counter0 | add:1}}
+                        </td>
+                        <td>
+                            {{ address.address }}
+                        </td>
+                        <td>
+                            {{ address.zipcode}}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
