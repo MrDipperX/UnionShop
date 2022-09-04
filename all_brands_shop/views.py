@@ -227,6 +227,11 @@ class ShopCheckout(DataMixin, TemplateView):
 
         return self.render_to_response(context)
 
+    def render_to_response(self, context, **response_kwargs):
+        response = super(ShopCheckout, self).render_to_response(context, **response_kwargs)
+        response.set_cookie('cart', {})
+        return response
+
 
 def update_item(request):
     data = json.loads(request.body)

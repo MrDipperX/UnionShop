@@ -66,7 +66,7 @@
 		}
 		var cart = JSON.parse(getCookie('cart'))
 
-		if (cart == undefined){
+		if (cart == undefined || cart == "{}"){
 			cart = {}
 			console.log('Cart Created!', cart)
             if (user == 'AnonymousUser'){

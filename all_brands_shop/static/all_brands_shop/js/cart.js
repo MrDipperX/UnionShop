@@ -17,7 +17,6 @@ for (i = 0; i < updateBtns.length; i++) {
 
 			if(presentUrl.includes('cart')){
 				size = this.dataset.product.split("-")[1]
-				console.log(size)
 			}
 			else{
 				size = sizeElement.value.toString().toLowerCase()
@@ -30,16 +29,16 @@ for (i = 0; i < updateBtns.length; i++) {
 				updateUserOrder(productId, action, size)
 			}
 
-			console.log('elem', sizeElement, 'pre', presentUrl)
-			console.log('productId:', productId, 'Action:', action, 'size:', size)
-			console.log('USER:', user)
+			// console.log('elem', sizeElement, 'pre', presentUrl)
+			// console.log('productId:', productId, 'Action:', action, 'size:', size)
+			// console.log('USER:', user)
 		}
 
 	})
 }
 
 function updateUserOrder(productId, action, size){
-	console.log('User is authenticated, sending data...')
+	// console.log('User is authenticated, sending data...')
 	document.cookie ='cart=' + JSON.stringify({}) + ";domain=;path=/"
 
 		var url = '/update_item/'
@@ -63,13 +62,13 @@ function updateUserOrder(productId, action, size){
 }
 
 function addCookieItem(productId, action, size){
-	console.log('User is not authenticated')
-	// cart[productId]['size'] = size
+	// console.log('User is not authenticated')
+
 	productIdSize = productId+'-'+size
 
 	if (action == 'add'){
 		if (cart[productIdSize] == undefined){
-			console.log('UNDIFINED')
+			// console.log('UNDIFINED')
 		cart[productIdSize] = {'quantity':1, 'size': size}
 
 		}else{
@@ -81,7 +80,7 @@ function addCookieItem(productId, action, size){
 		cart[productIdSize]['quantity'] -= 1
 
 		if (cart[productIdSize]['quantity'] <= 0){
-			console.log('Item should be deleted')
+			// console.log('Item should be deleted')
 			delete cart[productId];
 		}
 	}
@@ -89,7 +88,7 @@ function addCookieItem(productId, action, size){
 	if (action == 'delete'){
 		delete cart[productIdSize];
 	}
-	console.log('CART:', cart)
+	// console.log('CART:', cart)
 	document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
 
 	location.reload()
