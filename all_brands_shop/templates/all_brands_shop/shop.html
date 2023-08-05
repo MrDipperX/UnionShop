@@ -1,0 +1,238 @@
+{% extends 'all_brands_shop/base.html' %}
+{% load static %}
+{% load all_brands_shop_tags%}
+
+{% block navbar %}
+    <li><a href="{% url 'home' %}">Главная</a></li>
+    <li class="active"><a href="{% url 'shop' %}">Магазин</a></li>
+    <li><a href="{% url 'about' %}">О нас</a></li>
+{% endblock navbar %}
+
+{% block content %}
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Магазин</h4>
+
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'home' %}">Главная</a>
+                            <span>Магазин</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shop Section Begin -->
+    <section class="shop spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="shop__sidebar">
+                        <div class="shop__sidebar__search">
+
+                            <form method="get">
+                           {% for field in search_form %}
+                                {{ field }}
+                            {% endfor %}
+                                <button type="submit"><span class="icon_search"></span></button>
+                            </form>
+
+                        </div>
+                        <div class="shop__sidebar__accordion">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseOne" class="collapsed">Категории</a>
+                                    </div>
+                                    <div id="collapseOne" class="collapse" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__categories">
+                                                <ul class="nice-scroll">
+                                                    {% get_all_categories as categs %}
+                                                    {% for categ in categs %}
+                                                    <li><a href="{% url 'shop' %}?category={{ categ.name }}">{{ categ.name }}({% get_count_of_products_from_category categ.name %})</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseTwo" class="collapsed">Бренды</a>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__brand">
+                                                {% get_all_brands as brands %}
+                                                <ul>
+                                                    {% for brand in brands %}
+                                                    <li><a href="{% url 'shop' %}?brand={{ brand.name }}">{{ brand.name }}</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseThree" class="collapsed">Цены</a>
+                                    </div>
+                                    <div id="collapseThree" class="collapse" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__price">
+                                                <ul>
+                                                    {% get_lowest_price as lowest %}
+                                                    {% get_one_third_price as one_third %}
+                                                    {% get_two_thirds_price as two_thirds %}
+                                                    {% get_highest_price as highest %}
+                                                    <li><a href="{% url 'shop' %}?price1={{ lowest }}&price2={{ one_third }}">{{ lowest|floatformat:2 }} сум - {{ one_third|floatformat:2 }} сум</a></li>
+                                                    <li><a href="{% url 'shop' %}?price1={{ one_third }}&price2={{ two_thirds }}">{{ one_third|floatformat:2 }} сум - {{ two_thirds|floatformat:2 }} сум</a></li>
+                                                    <li><a href="{% url 'shop' %}?price1={{ two_thirds }}&price2={{ highest }}">{{ two_thirds|floatformat:2 }} сум - {{ highest|floatformat:2 }} сум</a></li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseFour" class="collapsed">Размеры</a>
+                                    </div>
+                                    <div id="collapseFour" class="collapse" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__size">
+
+                                                {% get_all_sizes as sizes %}
+                                                {% for size in sizes %}
+                                                    <a href="{% url 'shop' %}?size={{ size }}">{{ size }}</a>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseFive" class="collapsed">Пол</a>
+                                    </div>
+                                    <div id="collapseFive" class="collapse" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__sex">
+                                                {% get_all_genders as genders %}
+                                                <ul>
+                                                    {% for gender in genders %}
+                                                    <li><a href="{% url 'shop' %}?gender={{ gender.0 }}">{{ gender.1 }}</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="shop__product__option">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="shop__product__option__left">
+                                    <p>Показано {{ page_obj.start_index }}-{{ page_obj.end_index }} из  {{ page_obj.paginator.count }}</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="shop__product__option__right">
+                                    <a href="{% url 'shop' %}" style="color: #e53637"><i class="fa fa-refresh"></i> Сбросить фильтры</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {% for product in products %}
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item sale">
+                                <div class="product__item__pic set-bg" data-setbg="../../..{{ product.image_url }}">
+                                    {% if product.sale != 100 %}
+                                        <span class="label">Скидка</span>
+                                    {% endif %}
+                                    <ul class="product__hover">
+                                        <li><a href="{{ product.get_absolute_url }}"><img src="{% static 'all_brands_shop/images/icon/search.png' %}" alt=""><span>Подробнее</span></a></li>
+                                        {% if request.user.is_authenticated %}
+                                        <li><a data-product="{{product.id}}" data-action="add" class="update-favorites"><img src="{% static 'all_brands_shop/images/icon/heart.png' %}" alt=""><span>В избранное</span></a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                <div class="product__item__text">
+                                    <h6>{{ product.name }}</h6>
+
+                                    <a data-product="{{product.id}}" data-action="add" class="add-cart update-cart">+ Добавить в корзину</a>
+
+                                    {% if product.sale != 100 %}
+                                        <h5><s>{{ product.price|floatformat:2 }}</s> {{ product.sale_price|floatformat:2 }} сум</h5>
+                                    {% else %}
+                                        <h5>{{ product.price|floatformat:2 }} сум</h5>
+                                    {% endif %}
+                                    <br>
+                                    <div class="product__details__option__size">
+
+                                    {% for prod in product.get_sizes_by_product %}
+                                        <label for="{{ prod.size }}{{ product.id }}">{{ prod.size }}
+                                            <input type="radio" id="{{ prod.size }}{{ product.id }}" value="{{ prod.size }}">
+                                        </label>
+                                    {% endfor %}
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="product__pagination">
+{#                            {% for name, value in val_dict.items %}#}
+{#                            {{ value }}#}
+{#                            {% endfor %}#}
+
+                            {% if page_obj.number >= 4 %}
+                                <a href="?{% for name,value in val_dict.items %}{% if value %}{{ name }}={{ value }}&{% endif %}{% endfor %}page=1">1</a>
+                                <span>...</span>
+                            {% endif %}
+
+                            {% if page_obj.has_other_pages %}
+                                {% for page in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == page %}
+                                        <a href="?{% for name,value in val_dict.items %}{% if value %}{{ name }}={{ value }}&{% endif %}{% endfor %}page={{ page }}" class="active">{{ page }}</a>
+                                    {% elif page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
+                                        <a href="?{% for name,value in val_dict.items %}{% if value %}{{ name }}={{ value }}&{% endif %}{% endfor %}page={{ page }}">{{ page }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if page_obj.number <= page_obj.paginator.num_pages|add:-3 %}
+                                <span>...</span>
+                                <a href="?{% for name,value in val_dict.items %}{% if value %}{{ name }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+                            {% endif %}
+{#                                <a class="active" href="#">1</a>#}
+{#                                <a href="#">2</a>#}
+{#                                <a href="#">3</a>#}
+{#                                <span>...</span>#}
+{#                                <a href="#">21</a>#}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shop Section End -->
+{% endblock content %}

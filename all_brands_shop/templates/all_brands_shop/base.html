@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/magnific-popup.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/nice-select.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'all_brands_shop/css/popup.css' %}" type="text/css">
+
+    <script type="text/javascript">
+		var user = '{{request.user}}'
+
+		function getToken(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie !== '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getToken('csrftoken')
+
+		function getCookie(name) {
+		    // Split cookie string and get all individual name=value pairs in an array
+		    var cookieArr = document.cookie.split(";");
+
+		    // Loop through the array elements
+		    for(var i = 0; i < cookieArr.length; i++) {
+		        var cookiePair = cookieArr[i].split("=");
+
+		        /* Removing whitespace at the beginning of the cookie name
+		        and compare it with the given string */
+		        if(name == cookiePair[0].trim()) {
+		            // Decode the cookie value and return
+		            return decodeURIComponent(cookiePair[1]);
+		        }
+		    }
+
+		    // Return null if not found
+		    return null;
+		}
+		var cart = JSON.parse(getCookie('cart'))
+
+		if (cart == undefined || cart == "{}"){
+			cart = {}
+			console.log('Cart Created!', cart)
+            if (user == 'AnonymousUser'){
+                document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+            }
+
+		}
+
+
+		{#if (user != 'AnonymousUser'){#}
+		{#    document.cookie ='cart=' + JSON.stringify({}) + ";domain=;path=/"}#}
+
+		console.log('Cart:', cart)
+
+	</script>
+
+
+</head>
+
+<body>
+        <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__option">
+            {% if request.user.is_authenticated %}
+                <div class="header__top__right">
+                    <div class="header__top__links">
+                        <a href="{{ request.user.get_absolute_url }}">Профиль</a>
+                    </div>
+                    <div class="header__top__links">
+                        <a href="{% url 'logout' %}">Выйти</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="header__top__right">
+                    <div class="header__top__links">
+                        <a href="{% url 'registration' %}">Регистрация</a>
+                    </div>
+                    <div class="header__top__links">
+                        <a href="{% url 'login' %}">Войти</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="offcanvas__nav__option">
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'favorites' %}"><img src="{% static 'all_brands_shop/images/icon/heart.png' %}" alt=""></a>
+            {% endif %}
+            <a href="{% url 'cart' %}"><img src="{% static 'all_brands_shop/images/icon/cart.png' %}" alt=""> <span style="color:darkred">{{ cart_items }}</span></a>
+            <div class="price">{{order.get_cart_total|floatformat:2}} сум</div>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__text">
+            <p>Здравствуйте, {% if request.user.is_authenticated %}{{ request.user.username }}{% else %}Гость{% endif %}</p>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="header__top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-7">
+                        <div class="header__top__left">
+                            <p>Здравствуйте, {% if request.user.is_authenticated %}{{ request.user.username }}{% else %}Гость{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5">
+                        {% if request.user.is_authenticated %}
+                            <div class="header__top__right">
+                            <div class="header__top__links">
+                                <a href="{{ request.user.get_absolute_url }}">Профиль</a>
+                            </div>
+                            <div class="header__top__links">
+                                <a href="{% url 'logout' %}">Выйти</a>
+                            </div>
+                        </div>
+                        {% else %}
+                            <div class="header__top__right">
+                            <div class="header__top__links">
+                                <a href="{% url 'registration' %}">Регистрация</a>
+                            </div>
+                            <div class="header__top__links">
+                                <a href="{% url 'login' %}">Войти</a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo">
+                        <a href="{% url 'home' %}"><img src="{% static 'all_brands_shop/images/logo.png' %}" alt="" width="150px"></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            {% block navbar %}
+
+                            {% endblock navbar %}
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        {% if request.user.is_authenticated %}
+                            <a href="{% url 'favorites' %}"><img src="{% static 'all_brands_shop/images/icon/heart.png' %}" alt=""></a>
+                        {% endif %}
+                        <a href="{% url 'cart' %}"><img src="{% static 'all_brands_shop/images/icon/cart.png' %}" alt=""> <span style="color:darkred">{{ cart_items }}</span></a>
+
+                        <div class="price">{{order.get_cart_total|floatformat:2}} сум</div>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+    {% block content %}
+
+    {% endblock content %}
+
+<!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a href="#"><img src="{% static 'all_brands_shop/images/footer-logo.png' %}" alt="" width="200px"></a>
+                        </div>
+                        <p>The customer is at the heart of our unique business model, which includes design.</p>
+                        <a href="#"><img src="{% static 'all_brands_shop/images/payment.png' %}" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Shopping</h6>
+                        <ul>
+                            <li><a href="#">Clothing Store</a></li>
+                            <li><a href="#">Trending Shoes</a></li>
+                            <li><a href="#">Accessories</a></li>
+                            <li><a href="#">Sale</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Shopping</h6>
+                        <ul>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Payment Methods</a></li>
+                            <li><a href="#">Delivary</a></li>
+                            <li><a href="#">Return & Exchanges</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>NewLetter</h6>
+                        <div class="footer__newslatter">
+                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                            <form action="#">
+                                <input type="text" placeholder="Your email">
+                                <button type="submit"><span class="icon_mail_alt"></span></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="footer__copyright__text">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <p>Copyright ©
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            <i class="fa fa-heart-o"
+                            aria-hidden="true"></i> by <a href="https://t.me/Mr.Dipper" target="_blank">Mr.Dipper</a>
+                        </p>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <div id="popup_pls_reg" class="overlay">
+        <div class="popup">
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+                <h4 style="padding-bottom: 100px; padding-top: 50px">Пожалуйста <a href="{% url 'registration' %}">зарегестрируйтесь</a> или <a href="{% url 'login' %}">войдите</a> в свой аккунт</h4>
+                <a class="primary-btn" href="{% url 'registration' %}"> Регистрация </a>
+                <a class="primary-btn" href="{% url 'login' %}"> Войти </a>
+            </div>
+        </div>
+    </div>
+
+
+        <div id="popup_not_choose_size" class="overlay">
+        <div class="popup">
+            <a class="close" href="#">&times;</a>
+            <div class="content">
+                <h4 style="padding-bottom: 100px; padding-top: 50px">Вы не указали размер<br>Пожалуйста, выберите один из размеров снизу товара </h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Begin -->
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
+    <!-- Search End -->
+
+    <!-- Js Plugins -->
+    <script src="{% static 'all_brands_shop/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/jquery.nicescroll.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/jquery.slicknav.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/mixitup.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/main.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/cart.js' %}"></script>
+    <script src="{% static 'all_brands_shop/js/favorites.js' %}"></script>
+</body>
+
+</html>
